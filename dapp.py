@@ -1,11 +1,9 @@
 from os import environ
 import logging
-import requests
 import json
-from util import str2hex, hex2str
 from challenge import Challenge, Move
 
-from cartesi import DApp, Rollup, RollupData, URLRouter, JSONRouter
+from cartesi import DApp, Rollup, RollupData, JSONRouter
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -17,9 +15,6 @@ json_router = JSONRouter()
 # Register the JSON Router into the DApp
 dapp.add_router(json_router)
 
-# url_router = URLRouter()
-# dapp.add_router(url_router)
-
 # From https://github.com/techwithtim/Cartesi-Rock-Paper-Scissors-Project/blob/3293d3c5a2e4b7a298063a7998ce055e84419d81/rock-paper-scissors/main.py#L14C1-L16C12
 challenges = {}
 player_challenges = {}
@@ -27,14 +22,10 @@ next_id = 0
 
 rollup_server = environ["ROLLUP_HTTP_SERVER_URL"]
 
-def add_notice(rollup, data):
+def add_notice(rollup, data=""):
     logger.info(f"Adding notice {data}")
-    # resp = rollup.notice("0x" + data.encode('utf-8').hex())
-    # logger.info(f"Received notice {resp}")
-
-    notice = {"payload": str2hex(data)}
-    response = requests.post(rollup_server + "/notice", json=notice)
-    logger.info(f"Received notice status {response.status_code} body {response.content}")
+    resp = rollup.notice("0x" + data.encode('utf-8').hex())
+    logger.info(f"Received notice {resp}")
 
 def add_report(rollup, output=""):
     logger.info("Adding report " + output)
